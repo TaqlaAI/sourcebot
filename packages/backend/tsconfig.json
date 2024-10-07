@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"outDir": "dist",
+		"incremental": true,
+		"declaration": true,
+		"emitDecoratorMetadata": true,
+		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"module": "CommonJS",
+		"moduleResolution": "node",
+		"noEmitOnError": false,
+		"noImplicitAny": true,
+		"noUnusedLocals": true,
+		"pretty": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"sourceMap": true,
+		"target": "ES2017",
+        "inlineSources": true
+	},
+	"include": ["src/index.ts"],
+	"exclude": ["node_modules"]
+}

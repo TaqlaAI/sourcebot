@@ -1,0 +1,10 @@
+{
+    "$schema": "https://raw.githubusercontent.com/sourcebot-dev/sourcebot/main/schemas/index.json",
+    "Configs": [
+        {
+            "Type": "github",
+            "GitHubOrg": "sourcebot-dev",
+            "Name": "^sourcebot$"
+        }
+    ]
+}
