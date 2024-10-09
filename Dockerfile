@@ -27,6 +27,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ARG NEXT_PUBLIC_SOURCEBOT_TELEMETRY_DISABLED=BAKED_NEXT_PUBLIC_SOURCEBOT_TELEMETRY_DISABLED
 RUN yarn workspace @sourcebot/web build
 
+# ------ Build Backend ------
+FROM node-alpine AS backend-builder
+WORKDIR /app
+
+COPY package.json yarn.lock* ./
+COPY ./schemas ./schemas
+COPY ./packages/backend ./packages/backend
+RUN yarn workspace @sourcebot/backend install --frozen-lockfile
+RUN yarn workspace @sourcebot/backend build
+
 # ------ Runner ------
 FROM node-alpine AS runner
 WORKDIR /app
@@ -65,9 +75,12 @@ COPY --from=zoekt-builder \
 
 # Configure the webapp
 COPY --from=web-builder /app/packages/web/public ./packages/web/public
-RUN mkdir .next
 COPY --from=web-builder /app/packages/web/.next/standalone ./
 COPY --from=web-builder /app/packages/web/.next/static ./packages/web/.next/static
+
+# Configure the backend
+COPY --from=backend-builder /app/node_modules ./node_modules
+COPY --from=backend-builder /app/packages/backend ./packages/backend
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY entrypoint.sh ./entrypoint.sh

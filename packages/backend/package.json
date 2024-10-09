@@ -11,6 +11,7 @@
     },
     "devDependencies": {
         "@types/argparse": "^2.0.16",
+        "@types/node": "^22.7.5",
         "json-schema-to-typescript": "^15.0.2",
         "tsx": "^4.19.1",
         "typescript": "^5.6.2"
