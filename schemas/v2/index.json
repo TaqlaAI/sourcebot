@@ -1,0 +1,81 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "Sourcebot configuration schema",
+    "description": "A Sourcebot configuration file outlines which repositories Sourcebot should sync and index.",
+    "definitions": {
+        "GitHubConfig": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "github",
+                    "description": "GitHub Configuration"
+                },
+                "token": {
+                    "type": "string",
+                    "description": "A Personal Access Token (PAT)."
+                },
+                "url": {
+                    "type": "string",
+                    "format": "url",
+                    "default": "https://github.com",
+                    "description": "The URL of the GitHub host. Defaults to https://github.com",
+                    "examples": [
+                        "https://github.com",
+                        "https://example.github.com"
+                    ],
+                    "pattern": "^https?:\\/\\/[^\\s/$.?#].[^\\s]*$"
+                },
+                "orgs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[\\w.-]+$"
+                    },
+                    "examples": [
+                        [
+                            "my-org-name"
+                        ],
+                        [
+                            "sourcebot-dev",
+                            "commaai"
+                        ]
+                    ],
+                    "description": "List of organizations to sync with. All repositories in the organization will be synced, unless explicitly defined in the `exclude` property."
+                },
+                "repos": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[\\w.-]+\\/[\\w.-]+$"
+                    },
+                    "description": "List of individual repositories to sync with. Expected to be formatted as '{orgName}/{repoName}' or '{userName}/{repoName}'."
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "additionalProperties": false
+        },
+        "Repos": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/GitHubConfig"
+                }
+            ]
+        }
+    },
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "repos": {
+            "type": "array",
+            "description": "Defines a collection of repositories from varying code hosts that Sourcebot should sync with.",
+            "items": {
+                "$ref": "#/definitions/Repos"
+            }
+        }
+    },
+    "additionalProperties": false
+}

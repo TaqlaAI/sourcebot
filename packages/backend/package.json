@@ -3,16 +3,22 @@
     "version": "0.1.0",
     "private": true,
     "main": "index.js",
+    "type": "module",
     "scripts": {
-        "go": "yarn build && node ./dist/index.js",
-        "build": "tsc"
+        "go": "export PATH=\"$PWD/../../bin:$PATH\" && yarn build && node ./dist/index.js",
+        "build": "yarn generate:types && tsc",
+        "generate:types": "tsx tools/generateTypes.ts"
     },
     "devDependencies": {
         "@types/argparse": "^2.0.16",
+        "json-schema-to-typescript": "^15.0.2",
+        "tsx": "^4.19.1",
         "typescript": "^5.6.2"
     },
     "dependencies": {
+        "@octokit/rest": "^21.0.2",
         "argparse": "^2.0.1",
-        "simple-git": "^3.27.0"
+        "simple-git": "^3.27.0",
+        "winston": "^3.15.0"
     }
 }
