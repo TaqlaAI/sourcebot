@@ -54,10 +54,15 @@ export const getGitHubReposFromConfig = async (config: GitHubConfig, ctx: AppCon
             const fullName = `${hostname}/${repo.full_name}`;
             const repoPath = path.join(ctx.reposPath, `${fullName}.git`);
 
+            const cloneUrl = new URL(repo.clone_url!);
+            if (config.token) {
+                cloneUrl.username = config.token;
+            }
+            
             return {
                 name: repo.name,
                 fullName,
-                cloneUrl: repo.clone_url!,
+                cloneUrl: cloneUrl.toString(),
                 path: repoPath,
                 gitConfigMetadata: {
                     'zoek.web-url-type': 'github',
