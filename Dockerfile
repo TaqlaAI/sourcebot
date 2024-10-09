@@ -14,17 +14,18 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /cmd/ ./cmd/...
 FROM node-alpine AS web-builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
+
 COPY package.json yarn.lock* ./
+COPY ./packages/web ./packages/web
 
 # Fixes arm64 timeouts
 RUN yarn config set registry https://registry.npmjs.org/
 RUN yarn config set network-timeout 1200000
-RUN yarn --frozen-lockfile
-COPY . .
+RUN yarn workspace @sourcebot/web install --frozen-lockfile
 ENV NEXT_TELEMETRY_DISABLED=1
 # @see: https://phase.dev/blog/nextjs-public-runtime-variables/
 ARG NEXT_PUBLIC_SOURCEBOT_TELEMETRY_DISABLED=BAKED_NEXT_PUBLIC_SOURCEBOT_TELEMETRY_DISABLED
-RUN yarn run build
+RUN yarn workspace @sourcebot/web build
 
 # ------ Runner ------
 FROM node-alpine AS runner
@@ -63,10 +64,10 @@ COPY --from=zoekt-builder \
     /usr/local/bin/
 
 # Configure the webapp
-COPY --from=web-builder /app/public ./public
+COPY --from=web-builder /app/packages/web/public ./packages/web/public
 RUN mkdir .next
-COPY --from=web-builder /app/.next/standalone ./
-COPY --from=web-builder /app/.next/static ./.next/static
+COPY --from=web-builder /app/packages/web/.next/standalone ./
+COPY --from=web-builder /app/packages/web/.next/static ./packages/web/.next/static
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY entrypoint.sh ./entrypoint.sh

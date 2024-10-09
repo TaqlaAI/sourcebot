@@ -79,7 +79,7 @@ if [ -z "$NEXT_PUBLIC_SOURCEBOT_TELEMETRY_DISABLED" ] && [ ! -z "$SOURCEBOT_TELE
     export NEXT_PUBLIC_SOURCEBOT_TELEMETRY_DISABLED="$SOURCEBOT_TELEMETRY_DISABLED"
 fi
 
-find /app/public /app/.next -type f -name "*.js" |
+find /app/packages/web/public /app/packages/web/.next -type f -name "*.js" |
 while read file; do
     sed -i "s|BAKED_NEXT_PUBLIC_SOURCEBOT_TELEMETRY_DISABLED|${NEXT_PUBLIC_SOURCEBOT_TELEMETRY_DISABLED}|g" "$file"
 done
